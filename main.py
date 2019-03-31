@@ -1,5 +1,6 @@
 import os
 import re
+import moment
 from tika import parser
 
 from research_paper import ResearchPaper
@@ -23,8 +24,25 @@ def extract_paper_data(research_papers):
 			first_page_text = search_obj.group()
 			add_date_information(paper, get_paper_dates(first_page_text))
 			add_first_name_information(paper, get_first_name(paper.last_name, first_page_text))
-	print_papers(research_papers)
-			
+	analyze_research_data(research_papers)
+
+
+def analyze_research_data(research_papers):
+	male_papers = [paper for paper in research_papers if paper and paper.gender == 'male']
+	female_papers = [paper for paper in research_papers if paper and paper.gender == 'female']
+	print_average('Male', find_average_days(male_papers))
+	print_average('Female', find_average_days(female_papers))
+
+def print_average(gender, average):
+	print('Average days for {gender} publication: {average} days'.format(gender=gender, average=average))
+
+def find_average_days(papers):
+	sum_date = 0
+	for paper in papers:
+		received_date = moment.date(paper.received_date, 'YYYY MMMM D')
+		accepted_date = moment.date(paper.accepted_date, 'YYYY MMMM D')
+		sum_date += int(str(accepted_date - received_date).split(' ')[0])	
+	return (sum_date / len(papers)) if len(papers) != 0 else -1
 
 def add_date_information(paper, paper_dates):
 	if type(paper_dates) is tuple and len(paper_dates) == 2:
