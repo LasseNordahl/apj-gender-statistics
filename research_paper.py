@@ -35,11 +35,15 @@ class ResearchPaper:
 
     def add_first_name(self, first_name):
         self.first_name = first_name
-        url = "https://gender-api.com/get?key=" + GENDER_API_KEY + "&name=" + first_name
-        response = urlopen(url)
-        decoded = response.read().decode('utf-8')
-        data = json.loads(decoded)
-        self.gender = data['gender']
+        print('getting gender for ' + first_name)
+        try:
+            url = "https://gender-api.com/get?key=" + GENDER_API_KEY + "&name=" + first_name
+            response = urlopen(url)
+            decoded = response.read().decode('utf-8')
+            data = json.loads(decoded)
+            self.gender = data['gender']
+        except:
+            self.gender = None
 
     def add_received(self, received):
         self.received_date = received
