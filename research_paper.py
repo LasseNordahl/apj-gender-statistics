@@ -10,7 +10,10 @@ class ResearchPaper:
         self.file_name = file_name
         self.first_name = None
         self.gender = None
-        self.last_name = self.parse_last_name(file_name)
+        try:     
+            self.last_name = self.parse_last_name(file_name)
+        except TypeError:
+            self.last_name = ''
         self.received_date = None
         self.accepted_date = None
 
@@ -22,10 +25,12 @@ class ResearchPaper:
         return (self.file_name != None and self.first_name != None and self.last_name != None and self.gender != None and self.received_date != None and self.accepted_date != None)
 
     def parse_last_name(self, file_name):
-        name_regex = re.compile('([A-Za-z_]*)(?=_[0-9]+)')
+        name_regex = re.compile('([%0-9A-Za-z_]*)(?=_[0-9]+)')
         last_name = name_regex.search(file_name)
+        print(last_name)
         if last_name:
            pre_last_name = last_name.group()
+           print(pre_last_name)
            return ' '.join([name.capitalize() for name in pre_last_name.split('_')])
         else:
             raise TypeError('ResearchPaper __init__ - No last name found in ' + self.file_name)

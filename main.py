@@ -5,7 +5,7 @@ from tika import parser
 
 from research_paper import ResearchPaper
 
-paper_directory = 'papers'
+paper_directory = 'less_papers'
 
 def parse_papers(directory):
     research_paper_names = [file_name for file_name in os.listdir(paper_directory) if file_name != '.DS_Store']
@@ -61,10 +61,12 @@ def get_paper_dates(first_page_text):
 	return tuple(date_match.groups()) if date_match else -1
 
 def get_first_name(last_name, first_page_text):
+	# print('LASTNAME', last_name)
 	# if last_name == 'Martel': print(first_page_text)
 	name_regex = re.compile('<p>(\w+)(?: \w\.)? (?=(?:{u_last_name}|{last_name}))'.format(u_last_name=last_name.upper(), last_name=last_name))
 	first_name = name_regex.search(first_page_text)
 	if first_name:
+		# print('MATCH:', first_name)
 		return first_name.groups()[0]
 	else:
 		line_regex = re.compile('<p>(.+(?:{u_last_name}|{last_name}).*)'.format(u_last_name=last_name.upper(), last_name=last_name))
@@ -72,6 +74,7 @@ def get_first_name(last_name, first_page_text):
 		if line_with_name:
 			# Split the match object to grab the first name on that string
 			line = line_with_name.groups()[0].split(' ')
+			# print('SECOND MATCH:', line[0] if '.' not in line[0] else -1)
 			return line[0] if '.' not in line[0] else -1
 		else:
 			return -1
